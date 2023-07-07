@@ -1,9 +1,10 @@
 import openai
 from settings import OPENAI_SECRET_KEY
+import argparse
 
 openai.api_key = OPENAI_SECRET_KEY
 
-def main():
+def main(model, temperature):
 
     messages = []
     while True:
@@ -16,13 +17,13 @@ def main():
                 else:
                     line = input("")
                 first_line = False
-                lines.append(line)
+                line and lines.append(line)
                 message = "\n".join(lines)
                 if not line and message.strip():
                     break
 
             message = "\n".join(lines)
-
+            
             if message == "quit" or message == "q":
                 break
             messages.append({'role': 'user', 'content': message})
@@ -33,9 +34,9 @@ def main():
 
 
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model=model,
             messages=messages,
-            temperature=0,
+            temperature=temperature,
             n=1,
         )
         
@@ -45,4 +46,18 @@ def main():
         print(content)
 
 if __name__ == '__main__':
-    main()
+    try:
+        from settings import MODEL
+    except:
+        MODEL = 'gpt-4'
+    try:
+        from settings import TEMPERATURE
+    except:
+        TEMPERATURE = 0
+    parser = argparse.ArgumentParser(description='Chat with GPT')
+    parser.add_argument('--model', type=str, default=MODEL, help='GPT model to use')
+    parser.add_argument('--temperature', type=str, default=TEMPERATURE, help='GPT temperature')
+    model = parser.parse_args().model
+    temperature = parser.parse_args().temperature
+    print(f'Using model {model} with temperature {temperature}')
+    main(model=model, temperature=temperature)
