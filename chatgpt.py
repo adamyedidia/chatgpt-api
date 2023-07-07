@@ -56,7 +56,7 @@ if __name__ == '__main__':
         TEMPERATURE = 0
     parser = argparse.ArgumentParser(description='Chat with GPT')
     parser.add_argument('--model', type=str, default=MODEL, help='GPT model to use')
-    parser.add_argument('--temperature', type=str, default=TEMPERATURE, help='GPT temperature')
+    parser.add_argument('--temperature', type=float, default=TEMPERATURE, help='GPT temperature')
     model = parser.parse_args().model
     temperature = parser.parse_args().temperature
     print(f'Using model {model} with temperature {temperature}')
